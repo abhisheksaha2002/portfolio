@@ -1,9 +1,10 @@
 # Abhishek Saha — Portfolio
 
-A React + TypeScript + Tailwind portfolio, themed around search and retrieval
-(the domain the projects and experience live in): a live "query" typing
-animation in the hero, work history shown as retrieval records with
-relevance-score bars, and flip-to-reveal project cards.
+React + TypeScript + Tailwind + Vite portfolio, themed around search and
+retrieval: a drifting starfield background, work history shown as retrieval
+records with relevance-score bars, flip-to-reveal project cards, and an
+"Ask AI" chat widget backed by Groq that answers questions grounded in your
+actual resume data.
 
 ## Run locally
 
@@ -12,44 +13,43 @@ npm install
 npm run dev
 ```
 
-## Build
+The chat widget calls `/api/chat`, a Vercel serverless function — see
+"Local development with the chat API" below to run that too.
 
-```bash
-npm run build
-```
-
-Outputs a static site to `dist/`.
-
-## Deploy to GitHub Pages
-
-**Option A — GitHub Actions (recommended, auto-deploys on every push)**
+## Deploy to Vercel
 
 1. Push this repo to GitHub.
-2. In the repo, go to **Settings → Pages → Build and deployment → Source**,
-   and set it to **GitHub Actions**.
-3. Push to `main` — the included workflow (`.github/workflows/deploy.yml`)
-   builds the site and deploys it automatically. Your site will be live at
-   `https://<username>.github.io/<repo-name>/`.
+2. Go to [vercel.com/new](https://vercel.com/new) and import the repo.
+   Vercel auto-detects Vite — no config needed.
+3. Before or after the first deploy, add an environment variable:
+   **Project → Settings → Environment Variables**
+   - `GROQ_API_KEY` — get a free key at [console.groq.com](https://console.groq.com)
+4. Redeploy if you added the key after the first deploy. Done — you get a
+   `*.vercel.app` URL, or attach a custom domain under Settings → Domains.
 
-If you name the repo `<username>.github.io` (e.g. `abhisheksaha2002.github.io`),
-it deploys to the root domain instead: `https://<username>.github.io/`.
+## Local development with the chat API
 
-**Option B — `gh-pages` package (manual deploy)**
+The `/api/chat` function only runs under Vercel's dev server, not plain
+`vite dev`:
 
 ```bash
-npm install -D gh-pages
-npm run build
-npx gh-pages -d dist
+npm install -g vercel   # one-time
+cp .env.example .env    # then fill in your real GROQ_API_KEY
+vercel dev
 ```
 
-Then set **Settings → Pages → Source** to the `gh-pages` branch.
+Without a configured key, the chat widget still works — it silently falls
+back to a local keyword-matched FAQ bot (`src/data/botKnowledge.ts`) instead
+of breaking.
 
 ## Editing content
 
-All resume content lives in one place: `src/data/content.ts`. Update your
-experience, projects, skills, education, and contact info there — the
-components just render it.
+All resume content lives in `src/data/content.ts` — experience, projects,
+skills, education, contact info. Both the page and the chatbot's system
+prompt (`api/chat.ts`) read from this one file, so update it there and both
+stay in sync.
 
 ## Stack
 
-React 19, TypeScript, Vite, Tailwind CSS.
+React 19, TypeScript, Vite, Tailwind CSS, Vercel serverless functions, Groq
+(`llama-3.3-70b-versatile`).
