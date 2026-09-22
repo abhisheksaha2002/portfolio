@@ -161,7 +161,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
+        model: 'openai/gpt-oss-20b',
         temperature: 0.4,
         max_tokens: 400,
         messages: [{ role: 'system', content: buildSystemPrompt() }, ...recent],
