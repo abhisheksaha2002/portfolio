@@ -11,7 +11,7 @@ export default function Nav({ onAskAI }: { onAskAI: () => void }) {
   return (
     <nav className="sticky top-0 z-20 backdrop-blur bg-bg/85 border-b border-line">
       <div className="max-w-[960px] mx-auto px-7 h-[60px] flex items-center justify-between">
-        <span className="font-mono text-sm text-signal">abhishek.saha</span>
+        <span className="font-mono text-sm text-signal">abhishek.saha()</span>
         <ul className="hidden sm:flex gap-6 text-sm list-none m-0 p-0">
           {links.map((l) => (
             <li key={l.href}>
@@ -25,7 +25,7 @@ export default function Nav({ onAskAI }: { onAskAI: () => void }) {
           <ThemeToggle />
           <button
             onClick={onAskAI}
-            className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors"
+            className="flex items-center gap-2 bg-signal text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors"
           >
             💬 Ask AI
           </button>

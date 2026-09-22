@@ -8,7 +8,7 @@ export const profile = {
     'distributed backend services',
   ],
   blurb:
-    "I build the systems that sit between a question and the right answer. Incoming MS Computer Science student at UMass Amherst, previously an Associate Technical Consultant shipping search infrastructure for Abbott's global platform.",
+    "I build the systems that sit between a question and the right answer. An MS Computer Science student at UMass Amherst, previously an Associate Technical Consultant shipping search infrastructure for Abbott's global platform.",
   email: 'abhisheksaha@umass.edu',
   phone: '+1 (413) 472-6253',
   phoneHref: 'tel:+14134726253',

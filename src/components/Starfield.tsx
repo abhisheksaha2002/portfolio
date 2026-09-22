@@ -29,6 +29,7 @@ export default function Starfield() {
     let stars: Star[] = []
     let raf = 0
     let dpr = Math.min(window.devicePixelRatio || 1, 2)
+    let lastT = performance.now()
 
     function resize() {
       const canvas = canvasRef.current
@@ -45,6 +46,9 @@ export default function Starfield() {
       const count = Math.min(140, Math.max(50, Math.floor(area / 9000)))
       stars = Array.from({ length: count }, () => {
         const big = Math.random() < 0.06
+        // speeds are now in px/second, applied via delta-time below
+        const angle = Math.random() * Math.PI * 2
+        const speed = big ? 6 + Math.random() * 6 : 8 + Math.random() * 14
         return {
           x: Math.random() * window.innerWidth,
           y: Math.random() * window.innerHeight,
@@ -52,8 +56,8 @@ export default function Starfield() {
           baseAlpha: big ? 0.5 + Math.random() * 0.3 : 0.15 + Math.random() * 0.35,
           twinkleSpeed: 0.4 + Math.random() * 0.8,
           twinklePhase: Math.random() * Math.PI * 2,
-          vx: (Math.random() - 0.5) * 0.012,
-          vy: (Math.random() - 0.5) * 0.012 - 0.006,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 4, // slight upward drift bias
           big,
         }
       })
@@ -65,14 +69,16 @@ export default function Starfield() {
       if (!canvas || !ctx2) return
       const w = window.innerWidth
       const h = window.innerHeight
+      const dt = Math.min((t - lastT) / 1000, 0.05) // seconds, clamped
+      lastT = t
       ctx2.clearRect(0, 0, w, h)
 
-      const accent = getComputedStyle(document.documentElement).getPropertyValue('--signal').trim() || '#f34360'
+      const accent = getComputedStyle(document.documentElement).getPropertyValue('--signal').trim() || '#e8a53d'
 
       for (const s of stars) {
         if (!reduceMotion) {
-          s.x += s.vx
-          s.y += s.vy
+          s.x += s.vx * dt
+          s.y += s.vy * dt
           if (s.x < -5) s.x = w + 5
           if (s.x > w + 5) s.x = -5
           if (s.y < -5) s.y = h + 5
@@ -81,13 +87,8 @@ export default function Starfield() {
         const twinkle = reduceMotion ? 1 : 0.6 + 0.4 * Math.sin(t * 0.001 * s.twinkleSpeed + s.twinklePhase)
         const alpha = s.baseAlpha * twinkle
 
-        if (s.big) {
-          ctx2.fillStyle = hexToRgba(accent, alpha * 0.9)
-          ctx2.fillRect(s.x, s.y, s.size, s.size)
-        } else {
-          ctx2.fillStyle = hexToRgba(accent, alpha * 0.7)
-          ctx2.fillRect(s.x, s.y, s.size, s.size)
-        }
+        ctx2.fillStyle = hexToRgba(accent, s.big ? alpha * 0.9 : alpha * 0.7)
+        ctx2.fillRect(s.x, s.y, s.size, s.size)
       }
 
       if (!reduceMotion) raf = requestAnimationFrame(draw)
@@ -103,7 +104,8 @@ export default function Starfield() {
     }
 
     resize()
-    draw(0)
+    lastT = performance.now()
+    draw(lastT)
     window.addEventListener('resize', resize)
     return () => {
       window.removeEventListener('resize', resize)
