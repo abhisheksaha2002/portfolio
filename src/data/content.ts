@@ -73,7 +73,7 @@ export const projects = [
     summary:
       'Fault-tolerant distributed LLM serving system that routes requests by query difficulty and cluster load, and recovers from node failures mid-answer.',
     detail:
-      'In progress for COMPSCI 532. A cluster of 6 containerized nodes shares load metrics and detects failed peers through a SWIM gossip protocol built from scratch. A two-stage router picks a model size (Qwen2.5 1.5B or 7B) by query complexity, then the least-loaded worker using gossiped queue depth, latency, and KV-cache usage. When a worker dies, hot switching restores its KV-cache checkpoint on a new worker so generation resumes instead of restarting, with token-by-token correctness checks and OpenTelemetry/Grafana tooling to measure recovery time, P99 latency, and throughput against baselines.',
+      'A cluster of 6 containerized nodes shares load metrics and detects failed peers through a SWIM gossip protocol built from scratch. A two-stage router picks a model size (Qwen2.5 1.5B or 7B) by query complexity, then picks the least-loaded worker using gossiped queue depth, latency, and KV-cache usage. When a worker dies, hot switching restores its KV-cache checkpoint on a new worker, so generation resumes instead of restarting. Token-by-token correctness checks and OpenTelemetry/Grafana tooling measure recovery time, P99 latency, and throughput against baselines.',
     stack: ['Python', 'vLLM', 'LMCache', 'Docker', 'OpenTelemetry', 'Grafana'],
     link: undefined as string | undefined,
   },

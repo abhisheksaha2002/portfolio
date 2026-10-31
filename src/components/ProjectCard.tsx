@@ -11,7 +11,7 @@ export default function ProjectCard({ project }: { project: Project }) {
       onClick={() => setFlipped((f) => !f)}
       aria-pressed={flipped}
       aria-label={`${project.name}. Tap to ${flipped ? 'show summary' : 'show details'}.`}
-      className="text-left border border-line rounded-lg bg-raised p-0 cursor-pointer group [perspective:1400px] h-[280px] w-full"
+      className="text-left border border-line rounded-lg bg-raised p-0 cursor-pointer group [perspective:1400px] h-[320px] w-full"
     >
       <div
         className="relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d]"
