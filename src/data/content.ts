@@ -62,7 +62,7 @@ export const projects = [
     summary:
       'Multi-source RAG platform that ingests GitHub repos, web pages, and YouTube transcripts into one knowledge base.',
     detail:
-      "Its defining feature is cross-source synthesis — querying each source independently, then comparing and contrasting the answers rather than just merging them. Chunking and LanceDB vector indexing cut prompt context size by roughly 90% versus full-document prompting, with a provider layer that swaps between local Ollama inference and cloud-hosted Groq models without touching application code.",
+     'Ingests GitHub repos, web pages, and YouTube transcripts into one knowledge base, with cross-source synthesis that compares answers from each source, LanceDB vector indexing that cuts prompt context by about 90%, and swappable Ollama and Groq models.',
     stack: ['FastAPI', 'React', 'LangChain', 'LanceDB', 'Docker', 'Ollama / Groq'],
     link: undefined as string | undefined,
   },
@@ -73,7 +73,7 @@ export const projects = [
     summary:
       'Fault-tolerant distributed LLM serving system that routes requests by query difficulty and cluster load, and recovers from node failures mid-answer.',
     detail:
-      'A cluster of 6 containerized nodes shares load metrics and detects failed peers through a SWIM gossip protocol built from scratch. A two-stage router picks a model size (Qwen2.5 1.5B or 7B) by query complexity, then picks the least-loaded worker using gossiped queue depth, latency, and KV-cache usage. When a worker dies, hot switching restores its KV-cache checkpoint on a new worker, so generation resumes instead of restarting. Token-by-token correctness checks and OpenTelemetry/Grafana tooling measure recovery time, P99 latency, and throughput against baselines.',
+      'Gossip-based (SWIM) failure detection across 6 containerized nodes, a two-stage router that picks a Qwen1.5B or 7B model by query complexity and a worker by load, and KV-cache checkpoint recovery so generation resumes after a node failure instead of restarting.',
     stack: ['Python', 'vLLM', 'LMCache', 'Docker', 'OpenTelemetry', 'Grafana'],
     link: undefined as string | undefined,
   },
