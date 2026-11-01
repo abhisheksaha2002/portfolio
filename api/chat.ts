@@ -8,12 +8,22 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 // "Cannot find module '/var/task/src/data/content'" crash. Keeping the
 // data self-contained here avoids that entirely. If you update your
 // resume in src/data/content.ts, mirror the change here too.
+//
+// Project `detail` text here is intentionally longer than the portfolio
+// cards: the chatbot benefits from the extra context, and it never has to
+// fit inside a 280px card.
 
 const profile = {
   name: 'Abhishek Dwipen Saha',
   status: 'open to opportunities',
+  roles: [
+    'agentic RAG platforms',
+    'enterprise search systems',
+    'graph-based deep learning',
+    'distributed backend services',
+  ],
   blurb:
-    "I build the systems that sit between a question and the right answer. Incoming MS Computer Science student at UMass Amherst, previously an Associate Technical Consultant shipping search infrastructure for Abbott's global platform.",
+    "I build the systems that sit between a question and the right answer. An MS Computer Science student at UMass Amherst, previously an Associate Technical Consultant shipping search infrastructure for Abbott's global platform.",
   email: 'abhisheksaha@umass.edu',
   phone: '+1 (413) 472-6253',
   linkedin: 'https://www.linkedin.com/in/abhishek-saha-705095200/',
@@ -51,6 +61,7 @@ const projects = [
   {
     name: 'Klaris',
     tag: 'agentic RAG',
+    status: 'completed',
     summary:
       'Multi-source RAG platform that ingests GitHub repos, web pages, and YouTube transcripts into one knowledge base.',
     detail:
@@ -58,8 +69,19 @@ const projects = [
     stack: ['FastAPI', 'React', 'LangChain', 'LanceDB', 'Docker', 'Ollama / Groq'],
   },
   {
+    name: 'Complexity-Aware LLM Routing & Hot Switching',
+    tag: 'distributed systems',
+    status: 'in progress (UMass COMPSCI 532 team project); no results yet',
+    summary:
+      'Fault-tolerant distributed LLM serving system that routes requests by query difficulty and cluster load, and recovers from node failures mid-answer.',
+    detail:
+      'A cluster of 6 containerized nodes shares load metrics and detects failed peers through a SWIM gossip protocol built from scratch. A two-stage router picks a model size (Qwen2.5 1.5B or 7B) by query complexity, then picks the least-loaded worker using gossiped queue depth, latency, and KV-cache usage. When a worker dies, hot switching restores its KV-cache checkpoint on a new worker, so generation resumes instead of restarting. Token-by-token correctness checks and OpenTelemetry/Grafana tooling measure recovery time, P99 latency, and throughput against baselines.',
+    stack: ['Python', 'vLLM', 'LMCache', 'Docker', 'OpenTelemetry', 'Grafana'],
+  },
+  {
     name: 'TumorGraphNet',
     tag: 'graph learning',
+    status: 'completed',
     summary: 'Unsupervised dual-graph autoencoder for brain tumor segmentation on MRI scans.',
     detail:
       'Combines a spatial adjacency graph with a multi-scale feature-similarity graph through a cross-graph attention fusion module. An eight-dimensional superpixel feature pipeline feeds K-Means++ clustering to produce segmentation masks with no labeled training data — reaching competitive accuracy at 0.87M parameters, roughly a tenth the size of the 8.7M–11.4M-parameter baselines it is benchmarked against.',
@@ -91,7 +113,10 @@ function buildSystemPrompt() {
     .join('\n')
 
   const projText = projects
-    .map((p) => `- ${p.name} (${p.tag}): ${p.summary} ${p.detail} Stack: ${p.stack.join(', ')}.`)
+    .map(
+      (p) =>
+        `- ${p.name} (${p.tag}; status: ${p.status}): ${p.summary} ${p.detail} Stack: ${p.stack.join(', ')}.`,
+    )
     .join('\n')
 
   const skillsText = skillGroups.map((g) => `${g.name}: ${g.items.join(', ')}`).join('\n')
@@ -102,12 +127,15 @@ function buildSystemPrompt() {
 
 Ground every answer strictly in the facts below. If something isn't covered here, say you don't have that detail and point the visitor to his email (${profile.email}) instead of guessing or inventing anything.
 
+Some projects are marked "in progress". For those, describe the design and goals only, and make clear the work is ongoing. Never invent results, metrics, or outcomes for them.
+
 Keep answers conversational and short — 2 to 4 sentences unless the visitor clearly wants more detail.
 
 PROFILE
 Name: ${profile.name}
 Status: ${profile.status}
 Location: ${profile.location}
+Focus areas: ${profile.roles.join(', ')}
 Summary: ${profile.blurb}
 Email: ${profile.email}
 Phone: ${profile.phone}
