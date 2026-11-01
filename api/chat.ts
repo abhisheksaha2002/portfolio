@@ -71,7 +71,7 @@ const projects = [
   {
     name: 'Complexity-Aware LLM Routing & Hot Switching',
     tag: 'distributed systems',
-    status: 'in progress (UMass COMPSCI 532 team project); no results yet',
+    status: 'in progress (UMass COMPSCI 532 project); no results yet',
     summary:
       'Fault-tolerant distributed LLM serving system that routes requests by query difficulty and cluster load, and recovers from node failures mid-answer.',
     detail:
@@ -88,6 +88,25 @@ const projects = [
     stack: ['Python', 'PyTorch', 'Keras', 'OpenCV'],
   },
 ]
+
+const research = [
+  {
+    name: 'Which Parts of Agent Reasoning Impact Retrieval?',
+    context: 'UMass COMPSCI 646 (Information Retrieval) research project',
+    status: 'in progress; no results yet',
+    detail:
+      'A controlled study of deep research agents that perturbs their reasoning traces (keeping only search intent or found entities, adding length-matched filler, or injecting a false entity) to measure which parts of the reasoning actually improve retrieval, and whether wrong hypotheses push the retriever toward wrong documents. Builds on AgentIR, evaluated on BrowseComp-Plus with Qwen3-Embedding-4B, BM25, and AgentIR-4B using Recall@k and nDCG.',
+  },
+  {
+    name: 'Can the First Token Tell? Auditing Safety in Compressed and Fine-Tuned LLMs',
+    context: 'UMass COMPSCI 682 (Neural Networks) research project',
+    status: 'in progress; no results yet',
+    detail:
+      'Tests whether cheap output-level signals, such as first-token log-probabilities, can detect how much safety alignment an LLM loses after KV-cache quantization, weight quantization, or LoRA fine-tuning, without generating thousands of responses for a judge model. Compares these signals against perplexity and white-box auditors across 7B to 14B models.',
+  },
+]
+
+const currentCoursework = ['Neural Networks (COMPSCI 682)', 'Information Retrieval (COMPSCI 646)', 'Systems for Data Science (COMPSCI 532)']
 
 const skillGroups = [
   { name: 'languages', items: ['C++', 'Python', 'Java', 'JavaScript', 'TypeScript', 'SQL'] },
@@ -122,12 +141,15 @@ function buildSystemPrompt() {
   const skillsText = skillGroups.map((g) => `${g.name}: ${g.items.join(', ')}`).join('\n')
   const eduText = education.map((e) => `- ${e.school}, ${e.degree} (${e.when})`).join('\n')
   const certText = certifications.map((c) => `- ${c.name}: ${c.detail}`).join('\n')
+  const researchText = research.map((r) => `- ${r.name} (${r.context}; status: ${r.status}): ${r.detail}`).join('\n')
 
   return `You are the AI assistant embedded on ${profile.name}'s personal portfolio site. You answer visitor questions about his background, skills, projects, and experience, speaking about him in the third person (never pretend to BE him).
 
 Ground every answer strictly in the facts below. If something isn't covered here, say you don't have that detail and point the visitor to his email (${profile.email}) instead of guessing or inventing anything.
 
 Some projects are marked "in progress". For those, describe the design and goals only, and make clear the work is ongoing. Never invent results, metrics, or outcomes for them.
+
+When asked what he is currently working on, mention his MS coursework, his current research projects, and the in-progress systems project.
 
 Keep answers conversational and short — 2 to 4 sentences unless the visitor clearly wants more detail.
 
@@ -147,6 +169,12 @@ ${expText}
 
 PROJECTS
 ${projText}
+
+CURRENT RESEARCH
+${researchText}
+
+CURRENT COURSEWORK
+${currentCoursework.join(', ')}
 
 SKILLS
 ${skillsText}
